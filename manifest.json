@@ -1,0 +1,63 @@
+{
+  "id": "bk-plugin-pivot-tables",
+  "name": "Pivot Tables",
+  "author": {
+    "name": "Matthew Rathbone",
+    "url": "https://github.com/rathboma/bk-plugin-pivot-tables"
+  },
+  "description": "Build pivot tables from query results, selections, or tables, and export them to Excel, PDF, Markdown, CSV, HTML, or an image.",
+  "version": "1.0.0",
+  "icon": "pivot_table_chart",
+  "manifestVersion": 1,
+  "minAppVersion": "5.5.0",
+  "capabilities": {
+    "views": [
+      {
+        "id": "pivot-view",
+        "name": "Pivot Table",
+        "type": "base-tab",
+        "entry": "dist/index.html"
+      }
+    ],
+    "menu": [
+      {
+        "command": "new-pivot",
+        "name": "Pivot Table",
+        "view": "pivot-view",
+        "placement": [
+          "newTabDropdown",
+          "menubar.tools"
+        ]
+      },
+      {
+        "command": "pivot-selection",
+        "name": "Pivot Table from Selection",
+        "view": "pivot-view",
+        "placement": [
+          "results.corner.context",
+          "results.cell.context",
+          "tableTable.corner.context",
+          "tableTable.cell.context"
+        ]
+      },
+      {
+        "command": "pivot-query",
+        "name": "Pivot Query Results",
+        "view": "pivot-view",
+        "placement": [
+          "tab.query.header.context",
+          "editor.query.context"
+        ]
+      },
+      {
+        "command": "pivot-table",
+        "name": "Open in Pivot Table",
+        "view": "pivot-view",
+        "placement": [
+          "entity.table.context",
+          "tab.table.header.context"
+        ]
+      }
+    ]
+  }
+}
