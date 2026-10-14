@@ -151,3 +151,6 @@ vite.config.ts.timestamp-*
 # Plugin release archives (yarn package)
 release/
 *.zip
+
+# Optional MP4 from scripts/record-demo.cjs --mp4
+docs/demo.mp4

@@ -1,31 +1,99 @@
 # Pivot Tables for Beekeeper Studio
 
-Build pivot tables from query results, grid selections or whole tables in
-[Beekeeper Studio](https://www.beekeeperstudio.io), then export them to Excel, PDF,
-Markdown, CSV, HTML, JSON or a PNG image.
+Turn any query result, grid selection or table in [Beekeeper Studio](https://www.beekeeperstudio.io)
+into a pivot table, then share it as an Excel workbook, PDF, image, Markdown, CSV, HTML or JSON.
 
-![Pivot table built from an orders query, with a heatmap](docs/screenshot.png)
+![Building a pivot table: dragging fields into rows, columns and values, grouping dates by year, adding subtotals, a heatmap and a filter, then exporting](docs/demo.gif)
 
-## Features
+<sub>Recorded in the plugin's dev harness with 5,000 sample orders. Sped up slightly.</sub>
 
-- **Drag-and-drop builder** with Rows, Columns, Values and Filters, like a spreadsheet pivot table.
-- **Aggregations:** count, count distinct, sum, average, minimum, maximum, median, standard
-  deviation, variance, first and last. Several values can be shown side by side.
-- **Show values as** a percentage of the grand total, row total or column total.
-- **Date grouping** by year, quarter, month, ISO week, day, hour, month of year or day of week.
-- **Value filters** with search, "only this value", and counts for each value.
-- **Sorting** by label (A→Z, Z→A) or by value (largest or smallest first).
-- **Layout options:** totals column, totals row, subtotals, values in columns or rows, fixed
-  decimal places and a heatmap.
-- **Exports:**
-  - Excel (`.xlsx`): merged headers, number and percentage formats, frozen panes. The
-    "Excel + source data" option adds a sheet with the loaded rows so they can be re-pivoted in Excel.
-  - PDF: fits the page where it can and splits very wide pivots into column slices that repeat
-    the row labels. Embeds a Unicode font when the data needs one (Cyrillic, Greek and more).
-  - PNG image, Markdown, CSV, HTML and JSON.
-- **Copy** for a spreadsheet (tab separated, pastes into Excel or Google Sheets), as Markdown, or
-  as an image.
-- Follows the app theme, and each tab saves its layout.
+## Features at a glance
+
+|                         |                                                                                                    |
+| ----------------------- | -------------------------------------------------------------------------------------------------- |
+| **Drag-and-drop**       | Rows, Columns, Values and Filters, like a spreadsheet pivot table                                  |
+| **11 aggregations**     | Count, count distinct, sum, average, min, max, median, std deviation, variance, first, last        |
+| **% of total**          | Show any value as a share of the grand, row or column total                                        |
+| **Date grouping**       | Year, quarter, month, week, day, hour, month of year, day of week                                  |
+| **Filters and sorting** | Pick values with search and counts; sort A→Z, Z→A or by value                                      |
+| **Layout**              | Totals, subtotals, values in columns or rows, fixed decimals, heatmap                              |
+| **8 export formats**    | Excel, Excel + source data, PDF, PNG, Markdown, CSV, HTML, JSON                                    |
+| **3 ways to copy**      | Spreadsheet cells, Markdown table, image                                                           |
+| **Any data source**     | Grid selections, queries, tables (with the tab's filters), up to 100,000 rows                      |
+| **Fits in**             | Follows the light or dark theme, saves each tab's layout, runs locally with no network calls       |
+
+## Building a pivot
+
+Every column of the data appears in the **Fields** list. Drag a field into a zone, or click it and
+choose where it goes:
+
+- **Rows** and **Columns** group the data. Stack several fields to nest groups, and drag chips
+  to reorder them. **Swap** flips rows and columns.
+- **Values** are the numbers in the cells. The same field can be added more than once, for
+  example to show its sum and its average side by side. With no values, the pivot counts rows.
+- **Filters** narrow the data without adding a row or column.
+
+Drag a chip back to the field list to remove it. Click any chip for its options.
+
+### Summarizing values
+
+Click a value chip to change what it shows:
+
+| Summarize by                                              | Works on                                    |
+| --------------------------------------------------------- | ------------------------------------------- |
+| Count, count distinct                                     | Any column, or rows when no field is picked |
+| Sum, average, median, standard deviation, variance        | Numbers, including numeric text             |
+| Minimum, maximum                                          | Numbers, dates and text                     |
+| First, last                                               | Any column                                  |
+
+**Show as** turns a value into a percentage of the grand total, its row total or its column total.
+
+### Grouping, filtering and sorting
+
+Click a row, column or filter chip for:
+
+- **Group dates by** year, quarter, month, ISO week, day, hour, month of year or day of week.
+  Dates are grouped as written in the database, so time zones don't shift them.
+- **Show values:** a checklist of every value with its row count, a search box, All / None, and
+  "only" to keep a single value. Filtered chips are highlighted.
+- **Sort** labels A→Z or Z→A (numbers sort numerically, nulls go last), or by the size of
+  the first value, largest or smallest first.
+
+### Layout options
+
+Under **Options** in the sidebar:
+
+- **Totals column** and **totals row** for grand totals, and **subtotals** for each group
+  when rows or columns are nested.
+- **Values in** columns or rows, for pivots with several values.
+- **Decimals:** auto (whole numbers stay whole, other values use 2 places, percentages 1) or a
+  fixed 0 to 4 places.
+- **Heatmap** shades each value from its smallest to its largest.
+
+The title at the top names the tab and appears on exports.
+
+## Exporting and sharing
+
+**Export** saves a file. Exports always contain the whole pivot, even when the on-screen grid only
+shows the first rows of a very large one.
+
+| Format                  | What you get                                                                                                     |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Excel**               | Merged headers, number and percentage formats, bold totals and frozen header rows and label columns              |
+| **Excel + source data** | The same workbook with a second sheet of the loaded rows, ready to re-pivot in Excel                              |
+| **PDF**                 | Landscape when wide. Shrinks to fit where it can and splits very wide pivots into pages that repeat the row labels |
+| **Image**               | A sharp PNG with the title, source and filters, ready for slides, docs or chat                                    |
+| **Markdown**            | A GitHub-style table for READMEs, issues and wikis                                                               |
+| **CSV**                 | One header row and raw numbers, with row labels repeated on every row                                            |
+| **HTML**                | A standalone styled page that keeps merged headers                                                               |
+| **JSON**                | One object per row, keyed by column header                                                                       |
+
+**Copy** puts the pivot on the clipboard as spreadsheet cells (pastes into Excel or Google
+Sheets, percentages included), as a Markdown table, or as an image.
+
+This is the PNG the **Image** export produces for the pivot in the demo:
+
+![Image export of the revenue pivot, with title, source and filter summary](docs/export-example.png)
 
 ## Opening a pivot table
 
@@ -40,7 +108,8 @@ To pivot a whole result set from the grid, select every cell first (click the to
 the grid or press Ctrl/Cmd+A), then right-click.
 
 The data source can be changed at any time with the pencil button in the sidebar, which accepts a
-SQL query or a table with an optional `WHERE` clause.
+SQL query or a table with an optional `WHERE` clause. **SQL** in the status bar shows the exact
+query that loaded the data.
 
 ## Row limits
 
@@ -57,6 +126,14 @@ default, configurable up to 100,000 (the choice is remembered).
 - A banner shows when the limit was reached. Totals only cover the rows that were loaded.
 - When a saved tab is reopened, query sources wait for a click on **Run query** instead of
   running automatically. Selections and tables load straight away.
+
+## Light and dark themes
+
+The plugin uses Beekeeper Studio's theme colors and switches along with the app.
+
+| Light                                                      | Dark                                                           |
+| ---------------------------------------------------------- | -------------------------------------------------------------- |
+| ![Pivot table in the light theme](docs/screenshot.png)      | ![Pivot table in the dark theme](docs/screenshot-dark.png)      |
 
 ## Installing
 
@@ -96,6 +173,14 @@ parameters:
 - `theme=light|dark` sets the theme.
 - `fresh=1` clears the saved tab state.
 - `prod=1` loads the production build from `dist/` (run `yarn build` first).
+
+`docs/demo.gif` is recorded from the harness by `scripts/record-demo.cjs`, so it can be
+re-recorded after UI changes. With `yarn harness` running:
+
+```bash
+npm install -g playwright && npx playwright install chromium   # once; also needs ffmpeg
+NODE_PATH="$(npm root -g)" node scripts/record-demo.cjs
+```
 
 ### Project layout
 
