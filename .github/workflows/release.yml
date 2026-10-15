@@ -1,0 +1,36 @@
+name: Release
+
+# Push a tag matching the manifest version (e.g. v1.0.0) to build the plugin
+# and create a draft GitHub release with the two assets Beekeeper Studio needs:
+# manifest.json and {id}-{version}.zip. Review the draft, then publish it.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:run
+      - run: yarn build
+      - run: yarn package
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ID=$(node -p "require('./manifest.json').id")
+          VERSION=$(node -p "require('./manifest.json').version")
+          gh release create "$GITHUB_REF_NAME" \
+            --draft \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            manifest.json "release/${ID}-${VERSION}.zip"

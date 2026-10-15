@@ -1,0 +1,45 @@
+{
+  "name": "bk-plugin-pivot-tables",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pivot table builder plugin for Beekeeper Studio",
+  "license": "GPL-3.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rathboma/bk-plugin-pivot-tables"
+  },
+  "author": {
+    "name": "Matthew Rathbone",
+    "url": "https://beekeeperstudio.io"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "harness": "vite --config vite.harness.config.ts",
+    "package": "node scripts/package.mjs"
+  },
+  "dependencies": {
+    "@beekeeperstudio/plugin": "^1.7.2",
+    "dejavu-fonts-ttf": "^2.37.3",
+    "exceljs": "^4.4.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "vue": "^3.5.22"
+  },
+  "devDependencies": {
+    "@beekeeperstudio/vite-plugin": "^1.1.0",
+    "@types/node": "^22.10.0",
+    "@types/sql.js": "^1.4.11",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "happy-dom": "^20.0.0",
+    "sql.js": "^1.13.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.1.7",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.1.0"
+  }
+}

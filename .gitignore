@@ -147,3 +147,10 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Plugin release archives (yarn package)
+release/
+*.zip
+
+# Optional MP4 from scripts/record-demo.cjs --mp4
+docs/demo.mp4

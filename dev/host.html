@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pivot Tables dev host</title>
+    <style>
+      body {
+        margin: 0;
+        font: 13px system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        background: #ddd;
+      }
+      #bar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        background: #222;
+        color: #eee;
+      }
+      #bar select,
+      #bar button {
+        font: inherit;
+      }
+      #frame-wrap {
+        flex: 1;
+        display: flex;
+      }
+      iframe {
+        flex: 1;
+        border: 0;
+        background: white;
+      }
+      #toasts {
+        position: fixed;
+        right: 12px;
+        bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 10;
+      }
+      .toast {
+        padding: 8px 12px;
+        border-radius: 4px;
+        color: white;
+        background: #333;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+      .toast.error {
+        background: #c0392b;
+      }
+      .toast.success {
+        background: #27ae60;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bar">
+      <strong>Dev host</strong>
+      <label
+        >Opened via
+        <select id="command">
+          <option value="new-pivot">New tab (no source)</option>
+          <option value="pivot-selection">Result grid selection</option>
+          <option value="pivot-query" selected>Query tab</option>
+          <option value="pivot-table">Table tab (filtered)</option>
+        </select>
+      </label>
+      <label
+        >Theme
+        <select id="theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <button id="reload">Reload plugin</button>
+      <button id="clear">Clear saved state</button>
+      <span id="title" style="margin-left: auto; opacity: 0.8"></span>
+    </div>
+    <div id="frame-wrap"><iframe id="plugin" sandbox="allow-scripts allow-same-origin allow-forms"></iframe></div>
+    <div id="toasts"></div>
+    <script type="module" src="./host.ts"></script>
+  </body>
+</html>
