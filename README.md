@@ -201,11 +201,11 @@ all show the same layout.
 
 ## Releasing
 
-1. Update `version` in both `manifest.json` and `package.json`.
-2. Commit, then tag and push: `git tag v1.0.0 && git push origin v1.0.0`.
-3. The release workflow tests, builds and creates a **draft** GitHub release with `manifest.json`
+1. Run `bin/make-release.sh`. It suggests the next version from the existing tags, sets `version`
+   in `manifest.json` and `package.json`, commits, and pushes a matching tag such as `v1.0.0`.
+2. The release workflow tests, builds and creates a **draft** GitHub release with `manifest.json`
    and `bk-plugin-pivot-tables-<version>.zip`. Review it and publish it.
-4. For the Plugin Manager listing, add an entry to `plugins.json` in
+3. For the Plugin Manager listing, add an entry to `plugins.json` in
    [beekeeper-studio-plugins](https://github.com/beekeeper-studio/beekeeper-studio-plugins).
 
 ## Limitations
