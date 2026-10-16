@@ -178,6 +178,34 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
         notice: count > 1 ? `The tab has ${count} statements; using the last SELECT. Edit the query below to pick another.` : undefined,
       };
     }
+    // Visualize menu in a status bar: rows (a selection or a whole query
+    // result), or a table view with nothing selected. The grid only holds one
+    // page of a table, so the table is read here with the pivot's row limit.
+    case "pivot-results": {
+      if (params.source === "table") {
+        const entity = params.entity;
+        if (!entity?.name) return { source: null, notice: "No table was passed to the plugin." };
+        const filters: TableFilter[] = Array.isArray(params.filters) ? params.filters : [];
+        const where = typeof params.where === "string" ? params.where : filtersToWhere(dialect, filters);
+        return { source: { kind: "table", table: entity.name, schema: entity.schema ?? null, where } };
+      }
+      const range = params.activeRange;
+      if (!range || !Array.isArray(range.columns) || !Array.isArray(range.value)) {
+        return { source: null, notice: "No rows were passed to the plugin." };
+      }
+      const isResult = params.source === "result";
+      const source: SelectionSource = {
+        kind: "selection",
+        columns: range.columns,
+        rows: range.value,
+        origin: isResult ? "query result" : "selection",
+      };
+      const notice =
+        isResult && params.truncated
+          ? "The query result stopped at its row limit, so the pivot only covers the rows it returned."
+          : undefined;
+      return { source, notice };
+    }
     case "pivot-table": {
       const entity = params.entity ?? params.tab?.data?.table;
       const name = entity?.name;
