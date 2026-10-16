@@ -120,22 +120,6 @@ export function removeAndForget(config: PivotConfig, field: string) {
   }
 }
 
-/** Pick a reasonable starting pivot for a dataset. */
-export function suggestConfig(dataset: Dataset): PivotConfig {
-  const config = defaultConfig();
-  const sample = dataset.rows.slice(0, 2000);
-  const cardinality = (i: number) => new Set(sample.map((r) => String(r[i]))).size;
-  const candidates = dataset.columns
-    .map((c, i) => ({ c, i }))
-    .filter(({ c }) => c.type === "string" || c.type === "boolean")
-    .map(({ c, i }) => ({ name: c.name, n: cardinality(i) }))
-    .filter(({ n }) => n >= 2 && n <= 50)
-    .sort((a, b) => a.n - b.n);
-  if (candidates.length) config.rows = [candidates[0].name];
-  config.values = [makeValue(dataset, null)];
-  return config;
-}
-
 /** Deep copy of plain JSON data (works on Vue proxies, unlike structuredClone). */
 export function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
