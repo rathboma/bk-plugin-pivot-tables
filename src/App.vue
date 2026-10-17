@@ -42,11 +42,11 @@ import {
   defaultConfig,
   newValueId,
   removeAndForget,
-  suggestConfig,
   type DragPayload,
   type ViewState,
   type Zone,
 } from "./lib/state";
+import { suggestConfig } from "./lib/suggest";
 
 const RENDER_ROWS = 500;
 const RENDER_COLS = 300;

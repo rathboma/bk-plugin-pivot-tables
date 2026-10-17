@@ -35,6 +35,17 @@ choose where it goes:
 
 Drag a chip back to the field list to remove it. Click any chip for its options.
 
+A new pivot starts from a suggested layout:
+
+- **Rows:** a category-like column, such as `status`, `plan` or `country`.
+- **Columns:** the main date, grouped by day, month, quarter or year to fit the range of the data.
+  It goes in **Rows** instead when there's no category column.
+- **Values:** the sum of an amount-like column, such as `total`, `amount` or `quantity`, or a row
+  count when there isn't one.
+
+Ids, mostly empty columns, free text and timestamps such as `updated_at` aren't used.
+**Reset layout** under **Options** goes back to the suggestion.
+
 ### Summarizing values
 
 Click a value chip to change what it shows:

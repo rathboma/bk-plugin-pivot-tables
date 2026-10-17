@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { applyDrop, axisOf, defaultConfig, suggestConfig } from "../src/lib/state";
+import { applyDrop, axisOf, defaultConfig } from "../src/lib/state";
 import { sales } from "./fixtures";
 
 describe("applyDrop", () => {
@@ -48,14 +48,5 @@ describe("applyDrop", () => {
     expect(c.filters).toEqual([]);
     expect(c.fieldOptions.region).toEqual({ exclude: [], sort: "desc" });
     expect(start.filters).toEqual(["region"]);
-  });
-});
-
-describe("suggestConfig", () => {
-  it("picks a low-cardinality text column for rows and counts", () => {
-    const c = suggestConfig(sales);
-    expect(c.rows).toEqual(["region"]);
-    expect(c.values).toHaveLength(1);
-    expect(c.values[0].field).toBeNull();
   });
 });

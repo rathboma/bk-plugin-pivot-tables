@@ -74,10 +74,18 @@ const CURSOR_JS = `(() => {
   page.on("dialog", (d) => d.accept());
   page.on("pageerror", (e) => console.log("pageerror", e.message));
 
-  await page.goto(`${HARNESS}/dev/host.html?command=pivot-query&theme=light&fresh=1`);
+  // Start from a plain count by category rather than the suggested layout, so the demo can build it up.
+  await page.addInitScript(() => {
+    if (window !== window.top) return;
+    const config = { rows: ["category"], cols: [], filters: [], fieldOptions: {}, values: [{ id: "count", field: null, agg: "count", showAs: "value" }] };
+    localStorage.setItem("pivot-dev-host-state", JSON.stringify({ version: 1, source: null, config, maxRows: 10000, heatmap: false }));
+  });
+  await page.goto(`${HARNESS}/dev/host.html?command=pivot-query&theme=light`);
   await page.addStyleTag({ content: "#bar { display: none !important; } #toasts { bottom: 18px; right: 18px; } .toast { font-size: 14px; padding: 10px 16px; }" });
   const frameHandle = await (await page.waitForSelector("#plugin")).contentFrame();
   const f = page.frameLocator("#plugin");
+  // A restored query tab waits for a click before running.
+  await f.locator("button", { hasText: "Run query" }).click();
   await f.locator(".pivot-table").waitFor();
   await frameHandle.evaluate(CURSOR_JS);
 
