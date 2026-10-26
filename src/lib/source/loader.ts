@@ -202,7 +202,7 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
         const where = typeof visualize.where === "string" ? visualize.where : filtersToWhere(dialect, filters);
         return { source: { kind: "table", table: entity.name, schema: entity.schema ?? null, where } };
       }
-      const range = visualize.activeRange;
+      const range = visualize.target;
       if (!range || !Array.isArray(range.columns) || !Array.isArray(range.value)) {
         return { source: null, notice: "No rows were passed to the plugin." };
       }

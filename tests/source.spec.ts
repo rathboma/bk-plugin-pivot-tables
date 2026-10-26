@@ -188,19 +188,19 @@ describe("loader helpers", async () => {
   });
 
   it("derives sources from the Visualize menu", () => {
-    const range = { rows: [1, 2], columns: ["a"], value: [[1], [2]] };
+    const range = { type: "corner", rows: [1, 2], columns: ["a"], value: [[1], [2]] };
 
-    const result = sourceFromContext({ command: "pivot-results", params: { source: "result", activeRange: range } }, "postgresql");
+    const result = sourceFromContext({ command: "pivot-results", params: { source: "result", target: range } }, "postgresql");
     expect(result.source).toEqual({ kind: "selection", columns: ["a"], rows: [[1], [2]], origin: "query result" });
     expect(result.notice).toBeUndefined();
 
     const truncated = sourceFromContext(
-      { command: "pivot-results", params: { source: "result", activeRange: range, truncated: true } },
+      { command: "pivot-results", params: { source: "result", target: range, truncated: true } },
       "postgresql"
     );
     expect(truncated.notice).toMatch(/row limit/);
 
-    const selection = sourceFromContext({ command: "pivot-results", params: { source: "selection", activeRange: range } }, "postgresql");
+    const selection = sourceFromContext({ command: "pivot-results", params: { source: "selection", target: range } }, "postgresql");
     expect(selection.source).toMatchObject({ kind: "selection", origin: "selection" });
 
     // The host builds the WHERE condition for the table view's filters
