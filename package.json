@@ -23,7 +23,7 @@
     "package": "node scripts/package.mjs"
   },
   "dependencies": {
-    "@beekeeperstudio/plugin": "^1.7.2",
+    "@beekeeperstudio/plugin": "^1.8.0",
     "dejavu-fonts-ttf": "^2.37.3",
     "exceljs": "^4.4.0",
     "jspdf": "^4.2.1",

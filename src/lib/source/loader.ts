@@ -1,4 +1,12 @@
 import { confirm, runQuery } from "@beekeeperstudio/plugin";
+import type {
+  CornerMenuParams,
+  EditorMenuParams,
+  EntityMenuParams,
+  MenuEntity,
+  StatusbarMenuParams,
+  TabMenuParams,
+} from "@beekeeperstudio/plugin";
 import { fromQueryResult, fromRange, type LoadedData, type ResultLike } from "./dataset";
 import {
   buildTableQuery,
@@ -149,7 +157,8 @@ export interface ContextSource {
 
 interface RawContext {
   command?: string;
-  params?: Record<string, any>;
+  /** One of the SDK's `*MenuParams`, depending on the menu that opened the view. */
+  params?: unknown;
 }
 
 /** Work out the initial data source from how the view was opened. */
@@ -157,7 +166,8 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
   const params = ctx?.params ?? {};
   switch (ctx?.command) {
     case "pivot-selection": {
-      const range = params.activeRange ?? params.target;
+      const grid = params as Partial<CornerMenuParams>;
+      const range = grid.activeRange ?? grid.target;
       if (!range || !Array.isArray(range.columns) || !Array.isArray(range.value)) {
         return { source: null, notice: "No selection was passed to the plugin." };
       }
@@ -170,7 +180,9 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
       return { source, notice };
     }
     case "pivot-query": {
-      const text: string = params.selectedText || params.selectedQuery || params.text || params.tab?.data?.query || "";
+      const editor = params as Partial<EditorMenuParams>;
+      const tabQuery = (params as Partial<TabMenuParams>).tab?.data?.query;
+      const text = editor.selectedText || editor.selectedQuery || editor.text || (typeof tabQuery === "string" ? tabQuery : "");
       if (!text.trim()) return { source: null, notice: "The query tab is empty." };
       const { statement, count } = pickStatement(text);
       return {
@@ -182,18 +194,19 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
     // result), or a table view with nothing selected. The grid only holds one
     // page of a table, so the table is read here with the pivot's row limit.
     case "pivot-results": {
-      if (params.source === "table") {
-        const entity = params.entity;
+      const visualize = params as Partial<StatusbarMenuParams>;
+      if (visualize.source === "table") {
+        const entity = visualize.entity;
         if (!entity?.name) return { source: null, notice: "No table was passed to the plugin." };
-        const filters: TableFilter[] = Array.isArray(params.filters) ? params.filters : [];
-        const where = typeof params.where === "string" ? params.where : filtersToWhere(dialect, filters);
+        const filters: TableFilter[] = Array.isArray(visualize.filters) ? visualize.filters : [];
+        const where = typeof visualize.where === "string" ? visualize.where : filtersToWhere(dialect, filters);
         return { source: { kind: "table", table: entity.name, schema: entity.schema ?? null, where } };
       }
-      const range = params.activeRange;
+      const range = visualize.activeRange;
       if (!range || !Array.isArray(range.columns) || !Array.isArray(range.value)) {
         return { source: null, notice: "No rows were passed to the plugin." };
       }
-      const isResult = params.source === "result";
+      const isResult = visualize.source === "result";
       const source: SelectionSource = {
         kind: "selection",
         columns: range.columns,
@@ -201,16 +214,18 @@ export function sourceFromContext(ctx: RawContext | null | undefined, dialect: s
         origin: isResult ? "query result" : "selection",
       };
       const notice =
-        isResult && params.truncated
+        isResult && visualize.truncated
           ? "The query result stopped at its row limit, so the pivot only covers the rows it returned."
           : undefined;
       return { source, notice };
     }
     case "pivot-table": {
-      const entity = params.entity ?? params.tab?.data?.table;
+      // The sidebar sends the table; a table tab's header menu sends the tab
+      const tabData = (params as Partial<TabMenuParams>).tab?.data;
+      const entity = (params as Partial<EntityMenuParams>).entity ?? (tabData?.table as MenuEntity | undefined);
       const name = entity?.name;
       if (!name) return { source: null, notice: "No table was passed to the plugin." };
-      const filters: TableFilter[] = Array.isArray(params.tab?.data?.filters) ? params.tab.data.filters : [];
+      const filters = Array.isArray(tabData?.filters) ? (tabData.filters as unknown as TableFilter[]) : [];
       return {
         source: { kind: "table", table: name, schema: entity.schema ?? null, where: filtersToWhere(dialect, filters) },
       };
