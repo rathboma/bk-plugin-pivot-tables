@@ -111,12 +111,15 @@ This is the PNG the **Image** export produces for the pivot in the demo:
 | Where                                                                  | Menu item                  | Data used                                             |
 | ---------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------- |
 | New tab dropdown (next to `+`), **Tools** menu                         | Pivot Table                | A query or table picked in the plugin                 |
+| Query results status bar: **Visualize**                                | Pivot Table                | The selected cells, or every row of the result        |
+| Table data status bar: **Visualize**                                   | Pivot Table                | The selected cells, or the table with the view's filters as a `WHERE` clause |
 | Query results or table data: right-click a cell or the top-left corner | Pivot Table from Selection | The selected cells                                    |
 | Query tab header or the query editor's right-click menu                | Pivot Query Results        | The query, run again with a row limit                 |
 | Table in the sidebar, or a table tab header                            | Open in Pivot Table        | The table, with the tab's filters as a `WHERE` clause |
 
-To pivot a whole result set from the grid, select every cell first (click the top-left corner of
-the grid or press Ctrl/Cmd+A), then right-click.
+To pivot a whole result set, use **Visualize → Pivot Table** with nothing selected. From a table
+view, that reads the table itself (up to the row limit, 10,000 by default), not just the page shown
+in the grid.
 
 The data source can be changed at any time with the pencil button in the sidebar, which accepts a
 SQL query or a table with an optional `WHERE` clause. **SQL** in the status bar shows the exact
@@ -180,7 +183,7 @@ plugin in an iframe and answers its API requests from an in-memory SQLite databa
 sample orders, so the UI and exports can be worked on without Beekeeper Studio. Query
 parameters:
 
-- `command=new-pivot|pivot-selection|pivot-query|pivot-table` picks the menu entry to emulate.
+- `command=new-pivot|pivot-selection|pivot-query|pivot-table|pivot-results` picks the menu entry to emulate.
 - `theme=light|dark` sets the theme.
 - `fresh=1` clears the saved tab state.
 - `prod=1` loads the production build from `dist/` (run `yarn build` first).

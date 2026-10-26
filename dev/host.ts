@@ -199,6 +199,16 @@ async function main() {
             },
           },
         };
+      case "pivot-results":
+        return {
+          command: "pivot-results",
+          params: {
+            source: "table",
+            entity: { type: "table", name: "orders" },
+            filters: [{ field: "returned", type: "=", value: "0" }],
+            where: `"returned" = '0'`,
+          },
+        };
       default:
         return { command: "new-pivot" };
     }

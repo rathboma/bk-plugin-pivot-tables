@@ -186,4 +186,49 @@ describe("loader helpers", async () => {
     expect(sourceFromContext({ command: "new-pivot" }, "postgresql").source).toBeNull();
     expect(sourceFromContext(null, "postgresql").source).toBeNull();
   });
+
+  it("derives sources from the Visualize menu", () => {
+    const range = { type: "corner", rows: [1, 2], columns: ["a"], value: [[1], [2]] };
+
+    const result = sourceFromContext({ command: "pivot-results", params: { source: "result", target: range } }, "postgresql");
+    expect(result.source).toEqual({ kind: "selection", columns: ["a"], rows: [[1], [2]], origin: "query result" });
+    expect(result.notice).toBeUndefined();
+
+    const truncated = sourceFromContext(
+      { command: "pivot-results", params: { source: "result", target: range, truncated: true } },
+      "postgresql"
+    );
+    expect(truncated.notice).toMatch(/row limit/);
+
+    const selection = sourceFromContext({ command: "pivot-results", params: { source: "selection", target: range } }, "postgresql");
+    expect(selection.source).toMatchObject({ kind: "selection", origin: "selection" });
+
+    // The host builds the WHERE condition for the table view's filters
+    const table = sourceFromContext(
+      {
+        command: "pivot-results",
+        params: {
+          source: "table",
+          entity: { type: "table", name: "orders", schema: "public" },
+          filters: [{ field: "a", type: "=", value: "1" }],
+          where: `"a" = '1'`,
+        },
+      },
+      "postgresql"
+    );
+    expect(table.source).toEqual({ kind: "table", table: "orders", schema: "public", where: `"a" = '1'` });
+
+    // Without one, the filters are turned into a WHERE condition here
+    const filtersOnly = sourceFromContext(
+      {
+        command: "pivot-results",
+        params: { source: "table", entity: { name: "t" }, filters: [{ field: "a", type: "=", value: "1" }] },
+      },
+      "mysql"
+    );
+    expect(filtersOnly.source).toEqual({ kind: "table", table: "t", schema: null, where: "`a` = '1'" });
+
+    expect(sourceFromContext({ command: "pivot-results", params: { source: "table" } }, "postgresql").source).toBeNull();
+    expect(sourceFromContext({ command: "pivot-results", params: { source: "result" } }, "postgresql").source).toBeNull();
+  });
 });

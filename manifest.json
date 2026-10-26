@@ -57,6 +57,15 @@
           "entity.table.context",
           "tab.table.header.context"
         ]
+      },
+      {
+        "command": "pivot-results",
+        "name": "Pivot Table",
+        "view": "pivot-view",
+        "placement": [
+          "results.statusbar",
+          "tableTable.statusbar"
+        ]
       }
     ]
   }
